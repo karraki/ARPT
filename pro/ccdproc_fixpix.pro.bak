@@ -1,8 +1,0 @@
-pro ccdproc_fixpix,im,head,fixstr
-
-; Fix pixels via interpolation
-
-
-stop
-
-end
