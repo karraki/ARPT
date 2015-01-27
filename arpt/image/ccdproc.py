@@ -1,16 +1,16 @@
 """
- CCDPROC
+ ccdproc
 
  This is a generic CCD image processing program.
 
  INPUTS:
   input       The input list of images.
-  =xtalk
-  =lincorr    Apply linearity correction
-  =fixpix
+  =xTalk
+  =linCorr    Apply linearity correction
+  =fixPix
   /trim
   /overscan
-  /gaincorr
+  /gainCorr
   =zero
   =flat
   =illum      Apply
@@ -28,29 +28,32 @@
 """
 #KENZA - Q: what is editgain?
 
-def ccdproc(input,**kwargs):
-#input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,lincorr=lincorr,silent=silent,error=error
+def ccdproc(input, **kwargs):
+#input,fixPix=fixPix,trim=trim,overscan=overscan,gainCorr=gainCorr,
+#zero=zero,flat=flat,xTalk=xTalk,illum=illum,bootstrap=bootstrap,
+#bpm=bpm,clobber=clobber,verbose=verbose,linCorr=linCorr,silent=silent,
+#error=error
 
 #====================
 # CHECK THE INPUTS
 #====================
-
 # Load the input files
-LOADINPUT,input,files,count=nfiles
-files = strtrim(files,2)
-if nfiles==0:
-  error = 'No files to process'
-  if not keyword_set(silent) then print error
-  return
-endif
+    loadinput(input, files, count=nFiles)
+#KENZA - Check loadinput later
+    files.strip()
+    if nFiles==0:
+        error = 'No files to process'
+        if not kwargs['silent']: print error
+        return
 
-# No processing steps requested
-if not keyword_set(fixpix) and len(xtalk)==0 and not keyword_set(trim) and not keyword_set(overscan) and $
-   len(zero)==0 and and len(flat)==0 and len(illum)==0:
-  error = 'NO PROCESSING STEPS'
-  if not keyword_set(silent) then print error
-  return
-endif
+    # No processing steps requested
+    if not kwargs['fixPix'] and len(xtalk)==0 and not kwargs['trim'] \
+          and not kwargs['overscan'] and len(zero)==0 and len(flat)==0 \
+          and len(illum)==0:
+#KENZA - Q: 'and and'?
+        error = 'NO PROCESSING STEPS'
+        if not kwargs['silent']: print error
+        return
 
 # Get file information
 #   this also works if there is no input or the file doesn't exist
@@ -73,7 +76,7 @@ if len(illum)>0 and illum_info.exists==0 then error='ILLUM file '+illum_info.fil
 if len(bootstrap)>0 and bootstrap_info.exists==0 then error='Bootstrap file '+bootstrap_info.file+' NOT FOUND'
 if len(bpm)>0 and bpm_info.exists==0 then error='BPM file '+bpm_info.file+' NOT FOUND'
 if len(error)>0:
-  if not keyword_set(silent) then print error
+  if not kwargs['silent']: print error
   return
 endif
 
@@ -137,13 +140,13 @@ FOR f=0L,nfiles-1 do begin
   # File does not exist
   if info.exists==0:
     error[f] = origfile+' NOT FOUND'
-    if not keyword_set(silent) then print error[f]
+    if not kwargs['silent']: print error[f]
     goto,BOMBFILE
   endif
   # Not a FITS file
   if info.ext!='fits':
     error[f] = origfile+' NOT A FITS FILE'
-    if not keyword_set(silent) then print error[f]
+    if not kwargs['silent']: print error[f]
     goto,BOMBFILE
   endif
 
