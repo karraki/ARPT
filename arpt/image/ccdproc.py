@@ -35,14 +35,6 @@ def ccdproc(input,**kwargs):
 # CHECK THE INPUTS
 #====================
 
-# Not enough inputs
-if n_elements(input)==0:
-  print 'Syntax - ccdproc,files,editgain=editgain,fixpix=fixpix,xtalk=xtalk,trim=trim,overscan=overscan,'
-  print '                 zero=zero,flat=flat,illum=illum,bootstrap=bootstrap,bpm=bpm,'
-  print '                 lincorr=lincorr,clobber=clobber,verbose=verbose,silent=silent,error=error'
-  return
-endif
-
 # Load the input files
 LOADINPUT,input,files,count=nfiles
 files = strtrim(files,2)
