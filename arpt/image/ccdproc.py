@@ -16,11 +16,11 @@
 #  =flat
 #  =illum      Apply
 #  =bootstrap  Apply bootstrap correction.
-#  =bpm        Apply bad pixel mask using 
+#  =bpm        Apply bad pixel mask using
 #  /clobber
 #  /verbose
 #  /silent     Don't print anything to the screen.
-# 
+#
 # OUTPUTS:
 #  =error      Error if one occured.
 #
@@ -30,8 +30,8 @@
 # By D.Nidever  Jan 2014,  based in part on IRAF's ccdproc program
 #-
 
-pro ccdproc,input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,$
-                flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,$
+pro ccdproc,input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,\
+                flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,\
                 lincorr=lincorr,silent=silent,error=error
 
 
@@ -40,27 +40,27 @@ pro ccdproc,input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,ze
 #====================
 
 # Not enough inputs
-if n_elements(input) eq 0 then begin
-  print,'Syntax - ccdproc,files,editgain=editgain,fixpix=fixpix,xtalk=xtalk,trim=trim,overscan=overscan,'
-  print,'                 zero=zero,flat=flat,illum=illum,bootstrap=bootstrap,bpm=bpm,'
-  print,'                 lincorr=lincorr,clobber=clobber,verbose=verbose,silent=silent,error=error'
+if n_elements(input)==0:
+  print 'Syntax - ccdproc,files,editgain=editgain,fixpix=fixpix,xtalk=xtalk,trim=trim,overscan=overscan,'
+  print '                 zero=zero,flat=flat,illum=illum,bootstrap=bootstrap,bpm=bpm,'
+  print '                 lincorr=lincorr,clobber=clobber,verbose=verbose,silent=silent,error=error'
   return
 endif
 
 # Load the input files
 LOADINPUT,input,files,count=nfiles
 files = strtrim(files,2)
-if nfiles eq 0 then begin
+if nfiles==0:
   error = 'No files to process'
-  if not keyword_set(silent) then print,error
+  if not keyword_set(silent) then print error
   return
 endif
 
 # No processing steps requested
-if not keyword_set(fixpix) and n_elements(xtalk) eq 0 and not keyword_set(trim) and not keyword_set(overscan) and $
-   n_elements(zero) eq 0 and and n_elements(flat) eq 0 and n_elements(illum) eq 0 then begin
+if not keyword_set(fixpix) and len(xtalk)==0 and not keyword_set(trim) and not keyword_set(overscan) and $
+   len(zero)==0 and and len(flat)==0 and len(illum)==0:
   error = 'NO PROCESSING STEPS'
-  if not keyword_set(silent) then print,error
+  if not keyword_set(silent) then print error
   return
 endif
 
@@ -76,25 +76,25 @@ bootstrap_info = CCDPROC_FILEINFO(bootstrap)
 bpm_info = CCDPROC_FILEINFO(bpm)
 
 # Check that files exist if input
-if n_elements(xtalk) gt 0 and xtalk_info.exists eq 0 then error='XTALK file '+xtalk_info.file+' NOT FOUND'
-if n_elements(lincorr) gt 0 and lincorr_info.exists eq 0 then error='LINCORR file '+lincorr_info.file+' NOT FOUND'
-if n_elements(fixpix) gt 0 and fixpix_info.exists eq 0 then error='FIXPIX file '+fixpix_info.file+' NOT FOUND'
-if n_elements(zero) gt 0 and zero_info.exists eq 0 then error='ZERO file '+zero_info.file+' NOT FOUND'
-if n_elements(flat) gt 0 and flat_info.exists eq 0 then error='FLAT file '+flat_info.file+' NOT FOUND'
-if n_elements(illum) gt 0 and illum_info.exists eq 0 then error='ILLUM file '+illum_info.file+' NOT FOUND'
-if n_elements(bootstrap) gt 0 and bootstrap_info.exists eq 0 then error='Bootstrap file '+bootstrap_info.file+' NOT FOUND'
-if n_elements(bpm) gt 0 and bpm_info.exists eq 0 then error='BPM file '+bpm_info.file+' NOT FOUND'
-if n_elements(error) gt 0 then begin
-  if not keyword_set(silent) then print,error
+if len(xtalk)>0 and xtalk_info.exists==0 then error='XTALK file '+xtalk_info.file+' NOT FOUND'
+if len(lincorr)>0 and lincorr_info.exists==0 then error='LINCORR file '+lincorr_info.file+' NOT FOUND'
+if len(fixpix)>0 and fixpix_info.exists==0 then error='FIXPIX file '+fixpix_info.file+' NOT FOUND'
+if len(zero)>0 and zero_info.exists==0 then error='ZERO file '+zero_info.file+' NOT FOUND'
+if len(flat)>0 and flat_info.exists==0 then error='FLAT file '+flat_info.file+' NOT FOUND'
+if len(illum)>0 and illum_info.exists==0 then error='ILLUM file '+illum_info.file+' NOT FOUND'
+if len(bootstrap)>0 and bootstrap_info.exists==0 then error='Bootstrap file '+bootstrap_info.file+' NOT FOUND'
+if len(bpm)>0 and bpm_info.exists==0 then error='BPM file '+bpm_info.file+' NOT FOUND'
+if len(error)>0:
+  if not keyword_set(silent) then print error
   return
 endif
 
 # That that NEXTEND for the cal files is big enough for the input files
 
 # Some defaults
-if n_elements(zero) eq 0 then zero=''
-if n_elements(flat) eq 0 then flat=''
-if n_elements(illum) eq 0 then illum=''
+if len(zero)==0 then zero=''
+if len(flat)==0 then flat=''
+if len(illum)==0 then illum=''
 
 
 #=========================================
@@ -102,34 +102,34 @@ if n_elements(illum) eq 0 then illum=''
 #=========================================
 
 # Load bootstrap file
-if n_elements(bootstrap) gt 0 then begin
+if len(bootstrap)>0:
   CCDPROC_LOADBOOTSTRAP,bootstrap,bootstr,error=error,silent=silent
-  if error ne '' then return
+  if error!='' then return
 endif
 # Load xtalk values
-if n_elements(xtalk) gt 0 then begin
+if len(xtalk)>0:
   CCDPROC_LOADXTALK,xtalk,xstr,error=error,silent=silent
-  if error ne '' then return
+  if error!='' then return
 endif
 # Load fixpix file
-if n_elements(fixpix) gt 0 then begin
+if len(fixpix)>0:
   CCDPROC_LOADFIXPIX,fixpix,fixstr,error=error,silent=silent
-  if error ne '' then return
+  if error!='' then return
 endif
 
 # Print out processing steps
 if not keyword_set(silent) begin
-  then print,'Processing steps:'
-  if n_elements(xtalk) gt 0 then print,'XTALK ',xtalk
-  if n_elements(lincorr) gt 0 then print,'LINCORR ',lincorr
-  if n_elements(fixpix) gt 0 then print,'FIXPIX ',fixpix
-  if keyword_set(trim) then print,'TRIM'
-  if keyword_set(overscan) then print,'OVERSCAN'
-  if zero ne '' then print,'ZERO ',zero
-  if flat ne '' then print,'FLAT ',flat
-  if illum ne '' then print,'ILLUM ',illum
-  if n_elements(bootstrap) gt 0 then print,'BOOTSTRAP ',bootstrap
-  if n_elements(bpm) gt 0 then print,'BPM ',bpm
+  then print 'Processing steps:'
+  if len(xtalk)>0 then print 'XTALK ',xtalk
+  if len(lincorr)>0 then print 'LINCORR ',lincorr
+  if len(fixpix)>0 then print 'FIXPIX ',fixpix
+  if keyword_set(trim) then print 'TRIM'
+  if keyword_set(overscan) then print 'OVERSCAN'
+  if zero!='' then print 'ZERO ',zero
+  if flat!='' then print 'FLAT ',flat
+  if illum!='' then print 'ILLUM ',illum
+  if len(bootstrap)>0 then print 'BOOTSTRAP ',bootstrap
+  if len(bpm)>0 then print 'BPM ',bpm
 endif
 
 
@@ -147,29 +147,29 @@ FOR f=0L,nfiles-1 do begin
   outfile = info.dir+'/'+info.base+'_temp.fits'
 
   # File does not exist
-  if info.exists eq 0 then begin
+  if info.exists==0:
     error[f] = origfile+' NOT FOUND'
-    if not keyword_set(silent) then print,error[f]
+    if not keyword_set(silent) then print error[f]
     goto,BOMBFILE
   endif
   # Not a FITS file
-  if info.ext ne 'fits' then begin
+  if info.ext!='fits':
     error[f] = origfile+' NOT A FITS FILE'
-    if not keyword_set(silent) then print,error[f]
+    if not keyword_set(silent) then print error[f]
     goto,BOMBFILE
   endif
 
-  if not keyword_set(silent) then print,'Processing ',info.base+'.fits'
+  if not keyword_set(silent) then print 'Processing ',info.base+'.fits'
 
 
   # Initialize output file
   FILE_DELETE,outfile,/allow_nonexistent,/quiet
-  if next gt 1 then FITS_WRITE,outfile,0,*(info.hdu[0].head),/no_abort  # for multi-extension
+  if next>1 then FITS_WRITE,outfile,0,*(info.hdu[0].head),/no_abort  # for multi-extension
 
   #---------------------------
   # LOOP OVER THE EXTENSIONS
   #---------------------------
-  if next eq 0 then begin
+  if next==0:
     loext = 0L
     no_pdu = 0
   endif else begin
@@ -180,7 +180,7 @@ FOR f=0L,nfiles-1 do begin
 
     # Load the file
     FITS_READ,file,im,head,exten=i,no_pdu=no_pdu,/no_abort,message=error1
-    if error1 ne '' then goto,BOMBFILE
+    if error1!='' then goto,BOMBFILE
     origim = im
     im = float(im)
 
@@ -197,64 +197,64 @@ FOR f=0L,nfiles-1 do begin
 
     # Cross-talk
     #-----------
-    if n_elements(xtalk) gt 0 then begin
+    if len(xtalk)>0:
        CCDPROC_XTALK,im,head,i,xstr,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Linearity Correction
     #---------------------
-    if n_elements(lincorr) gt 0 then begin
+    if len(lincorr)>0:
       CCDPROC_LINCORR,im,head,i,linstr,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Fixpix
     #----------
-    if n_elements(fixpix) gt 0 then begin
+    if len(fixpix)>0:
       CCDPROC_FIXPIX,im,head,fixstr,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Overscan
     #---------
-    if keyword_set(overscan) then begin
+    if keyword_set(overscan):
       CCDPROC_OVERSCAN,im,head,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Trim
     #-----
-    if keyword_set(trim) then begin
+    if keyword_set(trim):
       CCDPROC_TRIM,im,head,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Zero Correct
     #-------------
-    if zero ne '' then begin
+    if zero!='':
       CCDPROC_ZERO,im,head,zero,exten=i,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Domeflat Correct
     #-----------------
-    if flat ne '' then begin
+    if flat!='':
       CCDPROC_FLAT,im,head,zero,exten=i,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Illumination Correction
     #-------------------------
     # maybe this should be called sflatcor
-    if illum ne '' then begin
+    if illum!='':
       CCDPROC_ILLUM,im,head,zero,exten=i,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Bootstrap
     #----------
-    if n_elements(bootstrap) gt 0 then begin
+    if len(bootstrap)>0:
       CCDPROC_BOOTSTRAP,im,head,bootstr,exten=i,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
     # Bad Pixel Mask
     #----------------
-    if n_elements(bpm) gt 0 then begin
+    if len(bpm)>0:
       CCDPROC_BPM,im,head,bpm,exten=i,error=error1,silent=silent
-      if error1 ne '' then goto,BOMBFILE
+      if error1!='' then goto,BOMBFILE
     endif
 
     # SHOULD LINEARITY CORRECTION GO BEFORE XTALK-CORRECTION????
@@ -297,11 +297,10 @@ FOR f=0L,nfiles-1 do begin
 
   BOMBFILE:
   # An error occured
-  if error1 ne '' then begin
+  if error1!='':
     error[f] = error1
-    if not keyword_set(silent) then print,error[f]
+    if not keyword_set(silent): print error[f]
     FILE_DELETE,outfile,/allow_nonexistent,/quiet  # delete temporary file
-  endif
 
 ENDFOR  # file loop
 
