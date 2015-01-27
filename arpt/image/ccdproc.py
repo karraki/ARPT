@@ -27,6 +27,7 @@
  By D.Nidever  Jan 2014,  based in part on IRAF's ccdproc program
 """
 #KENZA - Q: what is editgain?
+#Kenza - Q: is gainCorr a dead variable?
 
 def ccdproc(input, **kwargs):
 #input,fixPix=fixPix,trim=trim,overscan=overscan,gainCorr=gainCorr,
@@ -47,7 +48,7 @@ def ccdproc(input, **kwargs):
         return
 
     # No processing steps requested
-    if not kwargs['fixPix'] and len(xtalk)==0 and not kwargs['trim'] \
+    if not kwargs['fixPix'] and len(xTalk)==0 and not kwargs['trim'] \
           and not kwargs['overscan'] and len(zero)==0 and len(flat)==0 \
           and len(illum)==0:
 #KENZA - Q: 'and and'?
@@ -55,11 +56,13 @@ def ccdproc(input, **kwargs):
         if not kwargs['silent']: print error
         return
 
+#KENZA - worked up to here
+
 # Get file information
 #   this also works if there is no input or the file doesn't exist
-xtalk_info = CCDPROC_FILEINFO(xtalk)
-lincorr_info = CCDPROC_FILEINFO(lincorr)
-fixpix_info = CCDPROC_FILEINFO(fixpix)
+xTalk_info = CCDPROC_FILEINFO(xTalk)
+linCorr_info = CCDPROC_FILEINFO(linCorr)
+fixPix_info = CCDPROC_FILEINFO(fixPix)
 zero_info = CCDPROC_FILEINFO(zero)
 flat_info = CCDPROC_FILEINFO(flat)
 illum_info = CCDPROC_FILEINFO(illum)
@@ -67,9 +70,9 @@ bootstrap_info = CCDPROC_FILEINFO(bootstrap)
 bpm_info = CCDPROC_FILEINFO(bpm)
 
 # Check that files exist if input
-if len(xtalk)>0 and xtalk_info.exists==0 then error='XTALK file '+xtalk_info.file+' NOT FOUND'
-if len(lincorr)>0 and lincorr_info.exists==0 then error='LINCORR file '+lincorr_info.file+' NOT FOUND'
-if len(fixpix)>0 and fixpix_info.exists==0 then error='FIXPIX file '+fixpix_info.file+' NOT FOUND'
+if len(xTalk)>0 and xTalk_info.exists==0 then error='XTALK file '+xTalk_info.file+' NOT FOUND'
+if len(linCorr)>0 and linCorr_info.exists==0 then error='LINCORR file '+linCorr_info.file+' NOT FOUND'
+if len(fixPix)>0 and fixPix_info.exists==0 then error='FIXPIX file '+fixPix_info.file+' NOT FOUND'
 if len(zero)>0 and zero_info.exists==0 then error='ZERO file '+zero_info.file+' NOT FOUND'
 if len(flat)>0 and flat_info.exists==0 then error='FLAT file '+flat_info.file+' NOT FOUND'
 if len(illum)>0 and illum_info.exists==0 then error='ILLUM file '+illum_info.file+' NOT FOUND'
@@ -97,23 +100,23 @@ if len(bootstrap)>0:
   CCDPROC_LOADBOOTSTRAP,bootstrap,bootstr,error=error,silent=silent
   if error!='' then return
 endif
-# Load xtalk values
-if len(xtalk)>0:
-  CCDPROC_LOADXTALK,xtalk,xstr,error=error,silent=silent
+# Load xTalk values
+if len(xTalk)>0:
+  CCDPROC_LOADXTALK,xTalk,xstr,error=error,silent=silent
   if error!='' then return
 endif
-# Load fixpix file
-if len(fixpix)>0:
-  CCDPROC_LOADFIXPIX,fixpix,fixstr,error=error,silent=silent
+# Load fixPix file
+if len(fixPix)>0:
+  CCDPROC_LOADFIXPIX,fixPix,fixstr,error=error,silent=silent
   if error!='' then return
 endif
 
 # Print out processing steps
 if not keyword_set(silent) begin
   then print 'Processing steps:'
-  if len(xtalk)>0 then print 'XTALK ',xtalk
-  if len(lincorr)>0 then print 'LINCORR ',lincorr
-  if len(fixpix)>0 then print 'FIXPIX ',fixpix
+  if len(xTalk)>0 then print 'XTALK ',xTalk
+  if len(linCorr)>0 then print 'LINCORR ',linCorr
+  if len(fixPix)>0 then print 'FIXPIX ',fixPix
   if keyword_set(trim) then print 'TRIM'
   if keyword_set(overscan) then print 'OVERSCAN'
   if zero!='' then print 'ZERO ',zero
@@ -182,25 +185,25 @@ FOR f=0L,nfiles-1 do begin
     if CHECKPAR(zerohead,7,1,caller=errprefix+'Header - ',silent=silent,errstr=error1) then goto,BOMBFILE
 
 
-    #str = {im:im,head:head,fixpix:keyword_set(fixpix),overtrim:keyword_set(overtrim),$
+    #str = {im:im,head:head,fixPix:keyword_set(fixPix),overtrim:keyword_set(overtrim),$
     #       zero:'',flat:''}
 
 
     # Cross-talk
     #-----------
-    if len(xtalk)>0:
+    if len(xTalk)>0:
        CCDPROC_XTALK,im,head,i,xstr,error=error1,silent=silent
       if error1!='' then goto,BOMBFILE
     endif
     # Linearity Correction
     #---------------------
-    if len(lincorr)>0:
+    if len(linCorr)>0:
       CCDPROC_LINCORR,im,head,i,linstr,error=error1,silent=silent
       if error1!='' then goto,BOMBFILE
     endif
-    # Fixpix
+    # FixPix
     #----------
-    if len(fixpix)>0:
+    if len(fixPix)>0:
       CCDPROC_FIXPIX,im,head,fixstr,error=error1,silent=silent
       if error1!='' then goto,BOMBFILE
     endif
