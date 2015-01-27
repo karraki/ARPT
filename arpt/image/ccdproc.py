@@ -1,34 +1,32 @@
-#+
-#
-# CCDPROC
-#
-# This is a generic CCD image processing program.
-#
-# INPUTS:
-#  input       The input list of images.
-#  =xtalk
-#  =lincorr    Apply linearity correction
-#  =fixpix
-#  /trim
-#  /overscan
-#  /gaincorr
-#  =zero
-#  =flat
-#  =illum      Apply
-#  =bootstrap  Apply bootstrap correction.
-#  =bpm        Apply bad pixel mask using
-#  /clobber
-#  /verbose
-#  /silent     Don't print anything to the screen.
-#
-# OUTPUTS:
-#  =error      Error if one occured.
-#
-# USAGE:
-#  IDL>
-#
-# By D.Nidever  Jan 2014,  based in part on IRAF's ccdproc program
-#-
+"""
+ CCDPROC
+
+ This is a generic CCD image processing program.
+
+ INPUTS:
+  input       The input list of images.
+  =xtalk
+  =lincorr    Apply linearity correction
+  =fixpix
+  /trim
+  /overscan
+  /gaincorr
+  =zero
+  =flat
+  =illum      Apply
+  =bootstrap  Apply bootstrap correction.
+  =bpm        Apply bad pixel mask using
+  /clobber
+  /verbose
+  /silent     Don't print anything to the screen.
+
+ OUTPUTS:
+  =error      Error if one occured.
+
+
+ By D.Nidever  Jan 2014,  based in part on IRAF's ccdproc program
+"""
+#KENZA - Q: what is editgain?
 
 pro ccdproc,input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,\
                 flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,\
