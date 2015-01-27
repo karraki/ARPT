@@ -28,10 +28,8 @@
 """
 #KENZA - Q: what is editgain?
 
-pro ccdproc,input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,\
-                flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,\
-                lincorr=lincorr,silent=silent,error=error
-
+def ccdproc(input,**kwargs):
+#input,fixpix=fixpix,trim=trim,overscan=overscan,gaincorr=gaincorr,zero=zero,flat=flat,xtalk=xtalk,illum=illum,bootstrap=bootstrap,bpm=bpm,clobber=clobber,verbose=verbose,lincorr=lincorr,silent=silent,error=error
 
 #====================
 # CHECK THE INPUTS
