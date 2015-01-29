@@ -5,19 +5,19 @@
 
  INPUTS:
   input       The input list of images.
+  optional keyword arguments:
   =xTalk
   =linCorr    Apply linearity correction
   =fixPix
-  /trim
-  /overscan
-  /gainCorr
   =zero
   =flat
   =illum      Apply
   =bootstrap  Apply bootstrap correction.
   =bpm        Apply bad pixel mask using
+  optional boolean keyword arugments:
+  /trim
+  /overscan
   /clobber
-  /verbose
   /silent     Don't print anything to the screen.
 
  OUTPUTS:
@@ -27,13 +27,13 @@
  By D.Nidever  Jan 2014,  based in part on IRAF's ccdproc program
 """
 #KENZA - Q: what is editgain?
-#Kenza - Q: is gainCorr a dead variable?
+#KENZA - Q: is gainCorr a dead variable?
+#KENZA - Q: is verbose a dead variable?
 
 def ccdproc(input, **kwargs):
-#input,fixPix=fixPix,trim=trim,overscan=overscan,gainCorr=gainCorr,
-#zero=zero,flat=flat,xTalk=xTalk,illum=illum,bootstrap=bootstrap,
-#bpm=bpm,clobber=clobber,verbose=verbose,linCorr=linCorr,silent=silent,
-#error=error
+#xTalk=xTalk,linCorr=linCorr,fixPix=fixPix,zero=zero,flat=flat,illum=illum,
+#bootstrap=bootstrap,bpm=bpm,
+#trim=trim,overscan=overscan,clobber=clobber,silent=silent
 
 #====================
 # CHECK THE INPUTS
@@ -45,16 +45,19 @@ def ccdproc(input, **kwargs):
     if nFiles==0:
         error = 'No files to process'
         if not kwargs['silent']: print error
-        return
+        return error
 
     # No processing steps requested
-    if not kwargs['fixPix'] and len(xTalk)==0 and not kwargs['trim'] \
-          and not kwargs['overscan'] and len(zero)==0 and len(flat)==0 \
-          and len(illum)==0:
+    if not kwargs['trim'] and not kwargs['overscan'] and len(xTalk)==0 \ 
+#not kwargs['fixPix'] and 
+#linCorr=linCorr,fixPix=fixPix,bootstrap=bootstrap,bpm=bpm,
+            and len(zero)==0 and len(flat)==0 and len(illum)==0:
 #KENZA - Q: 'and and'?
+#KENZA - Q: why check if 'fixPix' is set as a keyword? isn't it a value???
+#KENZA - Q: should we check linCorr, bootstrap, bpm value too?
         error = 'NO PROCESSING STEPS'
         if not kwargs['silent']: print error
-        return
+        return error
 
 #KENZA - worked up to here
 
