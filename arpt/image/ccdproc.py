@@ -43,10 +43,10 @@ def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
                 illum='', bootstrap='', bpm='', trim=False, overscan=False, \
                 clobber=False, silent=False):
 
-#====================
-# CHECK THE INPUTS
-#====================
-# Load the input files
+    #====================
+    # CHECK THE INPUTS
+    #====================
+    # Load the input files
     loadinput(input, files, count=nFiles)
 #KENZA - Check loadinput later
     files.strip()
