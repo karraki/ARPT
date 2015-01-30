@@ -44,11 +44,11 @@ def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
     files.strip()
     if nFiles==0:
         error = 'No files to process'
-        if not kwargs['silent']: print error
+        if not silent: print error
         return error
 
     # No processing steps requested
-    if not kwargs['trim'] and not kwargs['overscan'] and len(xTalk)==0 \ 
+    if not trim and not overscan and len(xTalk)==0 \ 
 #not kwargs['fixPix'] and 
 #linCorr=linCorr,fixPix=fixPix,bootstrap=bootstrap,bpm=bpm,
             and len(zero)==0 and len(flat)==0 and len(illum)==0:
@@ -56,7 +56,7 @@ def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
 #KENZA - Q: why check if 'fixPix' is set as a keyword? isn't it a value???
 #KENZA - Q: should we check linCorr, bootstrap, bpm value too?
         error = 'NO PROCESSING STEPS'
-        if not kwargs['silent']: print error
+        if not silent: print error
         return error
 
 
@@ -81,7 +81,7 @@ if len(illum)>0 and illum_info.exists==0: error='ILLUM file '+illum_info.file+' 
 if len(bootstrap)>0 and bootstrap_info.exists==0: error='Bootstrap file '+bootstrap_info.file+' NOT FOUND'
 if len(bpm)>0 and bpm_info.exists==0: error='BPM file '+bpm_info.file+' NOT FOUND'
 if len(error)>0:
-  if not kwargs['silent']: print error
+  if not silent: print error
   return error
 
 
@@ -114,17 +114,18 @@ if len(fixPix)>0:
 
 
 # Print out processing steps
-if not keyword_set(silent): print 'Processing steps:'
+if not silent: print 'Processing steps:'
   if len(xTalk)>0: print 'XTALK ',xTalk
   if len(linCorr)>0: print 'LINCORR ',linCorr
   if len(fixPix)>0: print 'FIXPIX ',fixPix
-  if keyword_set(trim): print 'TRIM'
-  if keyword_set(overscan): print 'OVERSCAN'
   if zero!='': print 'ZERO ',zero
   if flat!='': print 'FLAT ',flat
   if illum!='': print 'ILLUM ',illum
   if len(bootstrap)>0: print 'BOOTSTRAP ',bootstrap
   if len(bpm)>0: print 'BPM ',bpm
+  if trim: print 'TRIM'
+  if overscan: print 'OVERSCAN'
+
 
 
 
@@ -145,17 +146,17 @@ for f in range(0,nfiles):
   # File does not exist
   if info.exists==0:
     error[f] = origfile+' NOT FOUND'
-    if not kwargs['silent']: print error[f]
+    if not silent: print error[f]
     goto,BOMBFILE
 
   # Not a FITS file
   if info.ext!='fits':
     error[f] = origfile+' NOT A FITS FILE'
-    if not kwargs['silent']: print error[f]
+    if not silent: print error[f]
     goto,BOMBFILE
 
 
-  if not keyword_set(silent): print 'Processing ',info.base+'.fits'
+  if not silent: print 'Processing ',info.base+'.fits'
 
 
   # Initialize output file
@@ -212,13 +213,13 @@ for f in range(0,nfiles):
 
     # Overscan
     #---------
-    if keyword_set(overscan):
+    if overscan:
       CCDPROC_OVERSCAN,im,head,error=error1,silent=silent
       if error1!='': goto,BOMBFILE
 
     # Trim
     #-----
-    if keyword_set(trim):
+    if trim:
       CCDPROC_TRIM,im,head,error=error1,silent=silent
       if error1!='': goto,BOMBFILE
 
@@ -289,14 +290,14 @@ for f in range(0,nfiles):
   # THE PROCESSING STEPS SHOULD GO IN THE PRIMARY HEADER!!!
 
   # Move temporary file to original file
-  if not keyword_set(clobber):
+  if not clobber:
     FILE_MOVE,outfile,file,/overwrite,/allow
 
   BOMBFILE:
   # An error occured
   if error1!='':
     error[f] = error1
-    if not keyword_set(silent): print error[f]
+    if not silent: print error[f]
     FILE_DELETE,outfile,/allow_nonexistent,/quiet  # delete temporary file
 
 #exit file for loop
