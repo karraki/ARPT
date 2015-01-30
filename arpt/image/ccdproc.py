@@ -62,14 +62,14 @@ def ccdproc(input, **kwargs):
 
 # Get file information
 #   this also works if there is no input or the file doesn't exist
-xTalk_info = CCDPROC_FILEINFO(xTalk)
-linCorr_info = CCDPROC_FILEINFO(linCorr)
-fixPix_info = CCDPROC_FILEINFO(fixPix)
-zero_info = CCDPROC_FILEINFO(zero)
-flat_info = CCDPROC_FILEINFO(flat)
-illum_info = CCDPROC_FILEINFO(illum)
-bootstrap_info = CCDPROC_FILEINFO(bootstrap)
-bpm_info = CCDPROC_FILEINFO(bpm)
+xTalk_info = ccdproc_fileinfo(xTalk)
+linCorr_info = ccdproc_fileinfo(linCorr)
+fixPix_info = ccdproc_fileinfo(fixPix)
+zero_info = ccdproc_fileinfo(zero)
+flat_info = ccdproc_fileinfo(flat)
+illum_info = ccdproc_fileinfo(illum)
+bootstrap_info = ccdproc_fileinfo(bootstrap)
+bpm_info = ccdproc_fileinfo(bpm)
 
 # Check that files exist if input
 if len(xTalk)>0 and xTalk_info.exists==0: error='XTALK file '+xTalk_info.file+' NOT FOUND'
@@ -82,7 +82,7 @@ if len(bootstrap)>0 and bootstrap_info.exists==0: error='Bootstrap file '+bootst
 if len(bpm)>0 and bpm_info.exists==0: error='BPM file '+bpm_info.file+' NOT FOUND'
 if len(error)>0:
   if not kwargs['silent']: print error
-  return
+  return error
 
 
 # That that NEXTEND for the cal files is big enough for the input files
@@ -138,7 +138,7 @@ error = strarr(nfiles)
 for f in range(0,nfiles):
 
   # File information and headers
-  info = CCDPROC_FILEINFO(files[f])
+  info = ccdproc_fileinfo(files[f])
   origfile = info.file
   outfile = info.dir+'/'+info.base+'_temp.fits'
 
