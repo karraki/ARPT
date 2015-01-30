@@ -30,6 +30,8 @@
 #KENZA - Q: is gainCorr a dead variable?
 #KENZA - Q: is verbose a dead variable?
 
+import os.path
+
 def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
                 illum='', bootstrap='', bpm='', trim=False, overscan=False, \
                 clobber=False, silent=False):
@@ -72,27 +74,28 @@ bootstrap_info = ccdproc_fileinfo(bootstrap)
 bpm_info = ccdproc_fileinfo(bpm)
 
 # Check that files exist if input
-if len(xTalk)>0 and xTalk_info.exists==0: error='XTALK file '+xTalk_info.file+' NOT FOUND'
-if len(linCorr)>0 and linCorr_info.exists==0: error='LINCORR file '+linCorr_info.file+' NOT FOUND'
-if len(fixPix)>0 and fixPix_info.exists==0: error='FIXPIX file '+fixPix_info.file+' NOT FOUND'
-if len(zero)>0 and zero_info.exists==0: error='ZERO file '+zero_info.file+' NOT FOUND'
-if len(flat)>0 and flat_info.exists==0: error='FLAT file '+flat_info.file+' NOT FOUND'
-if len(illum)>0 and illum_info.exists==0: error='ILLUM file '+illum_info.file+' NOT FOUND'
-if len(bootstrap)>0 and bootstrap_info.exists==0: error='Bootstrap file '+bootstrap_info.file+' NOT FOUND'
-if len(bpm)>0 and bpm_info.exists==0: error='BPM file '+bpm_info.file+' NOT FOUND'
+if len(xTalk)>0 and os.path.isfile(xTalk_info):
+    error = 'XTALK file '+xTalk_info.file+' NOT FOUND'
+if len(linCorr)>0 and os.path.isfile(linCorr_info):
+    error = 'LINCORR file '+linCorr_info.file+' NOT FOUND'
+if len(fixPix)>0 and os.path.isfile(fixPix_info):
+    error = 'FIXPIX file '+fixPix_info.file+' NOT FOUND'
+if len(zero)>0 and os.path.isfile(zero_info):
+    error = 'ZERO file '+zero_info.file+' NOT FOUND'
+if len(flat)>0 and os.path.isfile(flat_info):
+    error = 'FLAT file '+flat_info.file+' NOT FOUND'
+if len(illum)>0 and os.path.isfile(illum_info):
+    error = 'ILLUM file '+illum_info.file+' NOT FOUND'
+if len(bootstrap)>0 and os.path.isfile(bootstrap_info):
+    error = 'Bootstrap file '+bootstrap_info.file+' NOT FOUND'
+if len(bpm)>0 and os.path.isfile(bpm_info):
+    error = 'BPM file '+bpm_info.file+' NOT FOUND'
 if len(error)>0:
   if not silent: print error
   return error
 
 
 # That that NEXTEND for the cal files is big enough for the input files
-
-# Some defaults
-if len(zero)==0: zero=''
-if len(flat)==0: flat=''
-if len(illum)==0: illum=''
-
-
 #=========================================
 # LOAD CALIBRATION DATA USED BY ALL FILES
 #=========================================
