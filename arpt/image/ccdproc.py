@@ -56,10 +56,10 @@ def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
         return error
 
     # No processing steps requested
-    if not trim and not overscan and len(xTalk)==0 \ 
+    if not trim and not overscan and len(xTalk)==0 \
+            and len(zero)==0 and len(flat)==0 and len(illum)==0:
 #not kwargs['fixPix'] and 
 #linCorr=linCorr,fixPix=fixPix,bootstrap=bootstrap,bpm=bpm,
-            and len(zero)==0 and len(flat)==0 and len(illum)==0:
 #KENZA - Q: 'and and'?
 #KENZA - Q: why check if 'fixPix' is set as a keyword? isn't it a value???
 #KENZA - Q: should we check linCorr, bootstrap, bpm value too?
@@ -282,10 +282,10 @@ for f in range(0,nfiles):
         #SFLATCOR= 'Oct 18 11:34 Sky flat is Sflatn12M.fits[im5], scale 833.0756'
         # Add final processing info to header
         date = systime(0)
-        datearr = strtrim(strsplit(date,' ',/extract),2)
-        timarr = strsplit(datearr[3],':',/extract)
-        datestr = datearr[1]+' '+datearr[2]+' '+strjoin(timarr[0:1],':')
-        fxaddpar,head,'CCDPROC',datestr+' CCD processing done'
+        datearr = strtrim(strsplit(date, ' ', extract=True), 2)
+        timarr = strsplit(datearr[3], ':', extract=True)
+        datestr = datearr[1] + ' ' + datearr[2] + ' ' + strjoin(timarr[0:1] ,':')
+        fxaddpar(head, 'CCDPROC', datestr+' CCD processing done')
 
         # Do we need to change BITPIX, BSCALE, BZERO, etc??
         # Write output
