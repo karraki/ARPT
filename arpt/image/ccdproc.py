@@ -30,7 +30,7 @@
 #KENZA - Q: is gainCorr a dead variable?
 #KENZA - Q: is verbose a dead variable?
 
-def BOMBFILE:
+def bombfile(error1):
     # An error occured
     if error1!='':
         error[f] = error1
@@ -109,17 +109,17 @@ if len(error)>0:
 # Load bootstrap file
 if len(bootstrap)>0:
     ccdproc_loadbootstrap(bootstrap, bootstr, error=error, silent=silent)
-    if error!='': return
+    if error!='': return error1
 
 # Load xTalk values
 if len(xTalk)>0:
     ccdproc_loadxtalk(xTalk, xstr, error=error, silent=silent)
-    if error!='': return
+    if error!='': return error1
 
 # Load fixPix file
 if len(fixPix)>0:
     ccdproc_loadfixpix(fixPix, fixstr, error=error, silent=silent)
-    if error!='': return
+    if error!='': return error1
 
 
 # Print out processing steps
@@ -136,15 +136,13 @@ if not silent:
     if trim: print 'TRIM'
     if overscan: print 'OVERSCAN'
 
-
-
 #=================
 # PROCESS FILES
 #=================
 
 # Loop over input files
 error = strarr(nfiles)
-#FOR f=0L,nfiles-1:
+
 for f in range(0,nfiles):
 
     # File information and headers
@@ -156,13 +154,13 @@ for f in range(0,nfiles):
     if info.exists==0:
         error[f] = origfile+' NOT FOUND'
         if not silent: print error[f]
-        BOMBFILE
+        bombfile(error[f])
 
     # Not a FITS file
     if info.ext!='fits':
         error[f] = origfile+' NOT A FITS FILE'
         if not silent: print error[f]
-        BOMBFILE
+        bombfile(error[f])
 
 
     if not silent: print 'Processing ',info.base+'.fits'
@@ -186,79 +184,85 @@ for f in range(0,nfiles):
 
     for i in (loext,loext+next):
         # Load the file
-        FITS_READ(file, im, head, exten=i, no_pdu=no_pdu, no_abort=True, message=error1)
-        if error1!='': BOMBFILE
+        FITS_READ(file, im, head, exten=i, no_pdu=no_pdu, no_abort=True, \
+                      message=error1)
+        if error1!='': bombfile(error1)
         origim = im
         im = float(im)
 
         # Check the image and header
         # Check that IM is a data (type=1-5 or 12-15) 2D array
-        if CHECKPAR(zeroim,[1,2,3,4,5,12,13,14,15],[2],caller=errprefix+'Image - ',silent=silent,errstr=error1): BOMBFILE
+        if CHECKPAR(zeroim, [1,2,3,4,5,12,13,14,15], [2], \
+                        caller=errprefix+'Image - ', silent=silent, \
+                        errstr=error1): bombfile(error1)
         # Check that HEAD is a string array
-        if CHECKPAR(zerohead,7,1,caller=errprefix+'Header - ',silent=silent,errstr=error1): BOMBFILE
+        if CHECKPAR(zerohead, 7, 1, caller=errprefix+'Header - ', \
+                        silent=silent, errstr=error1): bombfile(error1)
 
-        #str = {im:im,head:head,fixPix:keyword_set(fixPix),overtrim:keyword_set(overtrim),zero:'',flat:''}
+        #str = {im:im, head:head, fixPix:keyword_set(fixPix), overtrim:keyword_set(overtrim), zero:'', flat:''}
 
         # Cross-talk
         #-----------
         if len(xTalk)>0:
             ccdproc_xtalk(im, head, i, xstr, error=error1, silent=silent)
-            if error1!='': BOMBFILE
+            if error1!='': bombfile(error1)
 
         # Linearity Correction
         #---------------------
         if len(linCorr)>0:
             ccdproc_lincorr(im, head, i, linstr, error=error1, silent=silent)
-            if error1!='': BOMBFILE
+            if error1!='': bombfile(error1)
 
         # FixPix
         #----------
         if len(fixPix)>0:
-            ccdproc_FIXPIX(im, head, fixstr, error=error1, silent=silent)
-            if error1!='': BOMBFILE
+            ccdproc_fixpix(im, head, fixstr, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
         # Overscan
         #---------
         if overscan:
-            ccdproc_OVERSCAN(im,head,error=error1,silent=silent)
-            if error1!='': BOMBFILE
+            ccdproc_overscan(im, head, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
         # Trim
         #-----
         if trim:
-            ccdproc_TRIM,im,head,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_trim(im, head, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
         # Zero Correct
         #-------------
         if zero!='':
-            ccdproc_ZERO,im,head,zero,exten=i,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_zero(im, head, zero, exten=i, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
         # Domeflat Correct
         #-----------------
         if flat!='':
-            ccdproc_FLAT,im,head,zero,exten=i,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_flat(im, head, zero, exten=i, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
         # Illumination Correction
         #-------------------------
         # maybe this should be called sflatcor
         if illum!='':
-            ccdproc_ILLUM,im,head,zero,exten=i,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_illum(im, head, zero, exten=i, error=error1, \
+                              silent=silent)
+            if error1!='': bombfile(error1)
 
         # Bootstrap
         #----------
         if len(bootstrap)>0:
-            ccdproc_BOOTSTRAP,im,head,bootstr,exten=i,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_bootstrap(im, head, bootstr, exten=i, error=error1, \
+                                  silent=silent)
+            if error1!='': bombfile(error1)
 
         # Bad Pixel Mask
         #----------------
         if len(bpm)>0:
-            ccdproc_BPM,im,head,bpm,exten=i,error=error1,silent=silent
-            if error1!='': goto,BOMBFILE
+            ccdproc_bpm(im, head, bpm, exten=i, error=error1, silent=silent)
+            if error1!='': bombfile(error1)
 
 
         # SHOULD LINEARITY CORRECTION GO BEFORE XTALK-CORRECTION????
@@ -285,14 +289,14 @@ for f in range(0,nfiles):
 
         # Do we need to change BITPIX, BSCALE, BZERO, etc??
         # Write output
-        MWRFITS,im,outfile,head,/silent
+        MWRFITS(im, outfile, head, silent=True)
 
     #exit extension for loop
     # THE PROCESSING STEPS SHOULD GO IN THE PRIMARY HEADER!!!
 
     # Move temporary file to original file
     if not clobber:
-        FILE_MOVE,outfile,file,/overwrite,/allow
+        FILE_MOVE(outfile, file, overwrite=True, allow=True)
 
 #exit file for loop
 
