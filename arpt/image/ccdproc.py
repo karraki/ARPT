@@ -30,10 +30,10 @@
 #KENZA - Q: is gainCorr a dead variable?
 #KENZA - Q: is verbose a dead variable?
 
-def ccdproc(input, **kwargs):
-#xTalk=xTalk,linCorr=linCorr,fixPix=fixPix,zero=zero,flat=flat,illum=illum,
-#bootstrap=bootstrap,bpm=bpm,
-#trim=trim,overscan=overscan,clobber=clobber,silent=silent
+def ccdproc(input, xTalk='', linCorr='', fixPix='', zero='', flat='', \
+                illum='', bootstrap='', bpm='', trim=False, overscan=False, \
+                clobber=False, silent=False):
+
 
 #====================
 # CHECK THE INPUTS
