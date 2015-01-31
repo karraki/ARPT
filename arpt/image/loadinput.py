@@ -53,6 +53,7 @@ def loadinput(input0, comment='#', stp=False):
     if input[0][0:1]=='@':
         inp = input[0][1:]
         # Loading the files
+# KENZA - change this function
         readline(inp, list, comment=comment, noblank=True)
         nlist = len(list)
     else:
@@ -71,18 +72,22 @@ def loadinput(input0, comment='#', stp=False):
         # Probably an array of filenames
         if len(input)>1:
             # Try to expand as wildcards
+# KENZA - change this function
             wildind = where(strpos(input,'*')!=-1 or strpos(input,'?')!=-1, nwild)
             normind = where(strpos(input,'*')!=-1 and strpos(input,'?')!=-1,nnorm)
 
             # Some wildcards
             if nwild>0:
                 list = None
+# KENZA - change this function
                 if nnorm>0: push(list,input[normind])
                 wild = input[wildind]
 
                 # Loop through the wildcards
                 for i in range(0,nwild):
+# KENZA - change this function
                     wfiles = file_search(wild[i],count=nwfiles)
+# KENZA - change this function
                     if nwfiles>0: push(list,wfiles)
       
                 nlist = len(list)
@@ -94,6 +99,7 @@ def loadinput(input0, comment='#', stp=False):
             
         # A globbed list or only one file
         else:
+# KENZA - change this function
             list = file_search(input, count=nlist)
             if nlist==0: list=input    # Maybe just one filename
             #nlist = len(list)
