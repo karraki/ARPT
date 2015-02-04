@@ -80,7 +80,7 @@
 -
 """
 
-def checkpar(param, goodtype, goodrank, caller=caller, default=default, dimen=dimen, npts=npts, rank=rank, type=type, silent=True, errstr='')
+def checkpar(param, goodtype, goodrank, caller=caller, default=default, dimen=dimen, npts=npts, rank=rank, type=type, silent=True, errstr=''):
 
    errval = 0
 
